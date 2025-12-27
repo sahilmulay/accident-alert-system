@@ -223,8 +223,20 @@
         <div class="type-option" onclick="setType(this, 'Fire')">🔥 Fire</div>
     </div>
 
-    <label>Evidence</label>
-    <input type="file" accept="image/*,video/*" capture="environment">
+    <label>Evidence (Photo / Video):</label>
+
+<input
+  type="file"
+  id="evidence"
+  accept="image/*,video/*"
+  capture="environment"
+>
+<small style="color:#555">
+  📷 Camera will open on mobile. Gallery is available if camera is not supported.
+</small>
+
+>
+
 
     <label>Contact Number</label>
     <input type="tel" id="phone" placeholder="Enter your phone number">
