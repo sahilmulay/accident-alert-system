@@ -1,316 +1,318 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Accident Alert System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Accident Alert System</title>
+  <style>
+    :root {
+      --primary-red: #d32f2f;
+      --secondary-green: #2e7d32;
+      --warning-orange: #ff9800;
+      --bg-gray: #f8f9fa;
+      --card-white: #ffffff;
+    }
 
-<style>
-  :root {
-    --danger: #d32f2f;
-    --success: #2e7d32;
-    --warning: #ff9800;
-    --dark: #2c3e50;
-    --light-bg: #f8f9fa;
-  }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-gray);
+      margin: 0;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: var(--light-bg);
-    margin: 0;
-    color: var(--dark);
-    -webkit-tap-highlight-color: transparent;
-  }
+    header {
+      background: var(--primary-red);
+      color: white;
+      padding: 25px 15px;
+      font-size: 24px;
+      font-weight: 800;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-  header {
-    background: var(--danger);
-    color: white;
-    padding: 25px 15px;
-    font-size: 20px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
-  }
+    .container {
+      flex: 1;
+      padding: 20px;
+      max-width: 500px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
 
-  .container {
-    max-width: 500px;
-    margin: auto;
-    padding: 16px;
-  }
+    .warning-card {
+      background: #fff3e0;
+      border-radius: 12px;
+      border-left: 6px solid var(--warning-orange);
+      padding: 15px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: #795548;
+    }
 
-  /* Critical Warning Style */
-  .warning {
-    background: #fff3e0;
-    border-radius: 12px;
-    padding: 15px;
-    color: #e65100;
-    text-align: left;
-    font-size: 13px;
-    line-height: 1.4;
-    border: 1px solid #ffe0b2;
-    margin-bottom: 20px;
-  }
+    /* Main Panic Button */
+    .report-btn {
+      background: var(--primary-red);
+      color: white;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 8px solid white;
+      box-shadow: 0 10px 25px rgba(211, 47, 47, 0.4);
+      font-size: 18px;
+      font-weight: 900;
+      margin: 40px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: pulse 2s infinite;
+    }
 
-  /* Large Pulse Button */
-  .report-btn {
-    background: var(--danger);
-    color: white;
-    font-weight: 900;
-    height: 120px;
-    border-radius: 60px;
-    font-size: 20px;
-    border: none;
-    box-shadow: 0 8px 20px rgba(211, 47, 47, 0.4);
-    transition: transform 0.2s;
-    animation: pulse 2s infinite;
-  }
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(211, 47, 47, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+    }
 
-  @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-    100% { transform: scale(1); }
-  }
+    .report-btn:active {
+      transform: scale(0.9);
+    }
 
-  .report-btn:active {
-    transform: scale(0.96);
-  }
+    /* Report Form Styling */
+    .box {
+      display: none;
+      background: var(--card-white);
+      padding: 24px;
+      border-radius: 20px;
+      box-shadow: 0 -5px 30px rgba(0,0,0,0.08);
+      text-align: left;
+      margin-top: -20px;
+      animation: slideUp 0.4s ease-out;
+    }
 
-  /* The Report Card */
-  .box {
-    display: none;
-    background: white;
-    padding: 24px;
-    margin-top: 20px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    text-align: left;
-    animation: slideUp 0.3s ease-out;
-  }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
 
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+    label {
+      font-weight: 700;
+      display: block;
+      margin: 15px 0 8px 0;
+      color: #444;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-  label {
-    font-weight: 700;
-    display: block;
-    margin-top: 20px;
-    font-size: 14px;
-    color: #666;
-    text-transform: uppercase;
-  }
+    /* Visual Selection Grid */
+    .type-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
 
-  /* Modern Grid for Type Selection */
-  .type-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 8px;
-  }
+    .type-option {
+      border: 2px solid #eee;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
 
-  .type-card {
-    border: 2px solid #eee;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.2s;
-  }
+    .type-option.active {
+      border-color: var(--primary-red);
+      background: #ffebee;
+      color: var(--primary-red);
+    }
 
-  .type-card.selected {
-    border-color: var(--danger);
-    background: #ffebee;
-    color: var(--danger);
-  }
+    input[type="tel"], input[type="file"], input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      border: 1.5px solid #eee;
+      border-radius: 10px;
+      box-sizing: border-box;
+      font-size: 16px;
+      background: #fafafa;
+    }
 
-  input[type="tel"], input[type="text"], input[type="file"] {
-    width: 100%;
-    padding: 14px;
-    margin-top: 8px;
-    border: 2px solid #eee;
-    border-radius: 12px;
-    box-sizing: border-box;
-    font-size: 16px;
-    outline: none;
-  }
+    .service-chip {
+      display: inline-flex;
+      align-items: center;
+      background: #eee;
+      padding: 10px 15px;
+      border-radius: 50px;
+      margin: 5px 5px 5px 0;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-  input:focus {
-    border-color: var(--danger);
-  }
+    .service-chip input { display: none; }
+    .service-chip.active {
+      background: var(--primary-red);
+      color: white;
+    }
 
-  /* Checkbox Chips */
-  .services {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
-  }
+    .submit-btn {
+      background: var(--secondary-green);
+      color: white;
+      width: 100%;
+      padding: 18px;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 25px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+    }
 
-  .chip {
-    padding: 10px 18px;
-    background: #eee;
-    border-radius: 25px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-weight: 500;
-  }
-
-  .chip input { margin-right: 8px; }
-  .chip.active {
-    background: var(--dark);
-    color: white;
-  }
-
-  .submit-btn {
-    background: var(--success);
-    color: white;
-    font-weight: bold;
-    margin-top: 30px;
-    padding: 18px;
-    border-radius: 12px;
-    font-size: 18px;
-    box-shadow: 0 6px 15px rgba(46, 125, 50, 0.3);
-  }
-
-  .preview img {
-    margin-top: 15px;
-    border-radius: 12px;
-    border: 1px solid #eee;
-  }
-
-  footer {
-    margin: 40px 0;
-    font-size: 12px;
-    color: #999;
-    font-weight: 500;
-  }
-</style>
+    footer {
+      padding: 30px;
+      font-size: 12px;
+      color: #aaa;
+      letter-spacing: 1px;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>🚑 Emergency Alert</header>
+<header>
+  🚑 EMERGENCY ALERT
+</header>
 
 <div class="container">
 
-<div class="warning">
-  <strong>LEGAL NOTICE:</strong> False accident reporting is a punishable offense. This system logs your GPS coordinates for emergency verification.
-</div>
+  <div id="homeScreen">
+    <div class="warning-card">
+      <span>⚠️</span>
+      <span><strong>WARNING:</strong> Misuse of this system results in immediate legal action by local authorities.</span>
+    </div>
 
-<button id="mainBtn" class="report-btn" onclick="openReport()">🚨 REPORT ACCIDENT</button>
-
-<div id="reportBox" class="box">
-  <h2 style="margin:0 0 10px 0; font-size: 22px;">Accident Details</h2>
-  
-  <label>Evidence (Required)</label>
-  <input type="file" id="evidence" accept="image/*,video/*" capture="environment" onchange="previewFile()">
-  <div class="preview" id="preview"></div>
-
-  <label>Accident Type</label>
-  <div class="type-grid">
-    <div class="type-card" onclick="selectType(this, 'Car')">🚗 Car</div>
-    <div class="type-card" onclick="selectType(this, 'Bike')">🏍️ Bike</div>
-    <div class="type-card" onclick="selectType(this, 'Medical')">🤕 Medical</div>
-    <div class="type-card" onclick="selectType(this, 'Fire')">🔥 Fire</div>
+    <button class="report-btn" onclick="openReport()">
+      TAP TO<br>REPORT
+    </button>
+    <p style="color:#666; font-weight: 500;">In case of accident, tap the button above.</p>
   </div>
 
-  <label>Contact Number</label>
-  <input type="tel" id="phone" placeholder="Enter your phone number">
+  <div id="reportBox" class="box">
+    <div style="display:flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin:0; font-size: 20px;">Accident Report</h2>
+        <span onclick="closeReport()" style="cursor:pointer; color:#999; font-size: 24px;">&times;</span>
+    </div>
 
-  <label>Services to Notify</label>
-  <div class="services">
-    <div class="chip active"><input type="checkbox" checked disabled> Police</div>
-    <label class="chip" id="ambLabel"><input type="checkbox" id="ambulance" onchange="toggleChip('ambLabel')"> Ambulance</label>
-    <label class="chip" id="fireLabel"><input type="checkbox" id="fire" onchange="toggleChip('fireLabel')"> Fire</label>
+    <label>Accident Type</label>
+    <div class="type-grid" id="typeGrid">
+        <div class="type-option" onclick="setType(this, 'Car')">🚗 Car</div>
+        <div class="type-option" onclick="setType(this, 'Bike')">🏍️ Bike</div>
+        <div class="type-option" onclick="setType(this, 'Medical')">🤕 Medical</div>
+        <div class="type-option" onclick="setType(this, 'Fire')">🔥 Fire</div>
+    </div>
+
+    <label>Evidence</label>
+    <input type="file" accept="image/*,video/*" capture="environment">
+
+    <label>Contact Number</label>
+    <input type="tel" id="phone" placeholder="Enter your phone number">
+
+    <label>Services Required</label>
+    <div>
+        <div class="service-chip active" style="opacity: 0.6; cursor: not-allowed;">
+            <input type="checkbox" checked disabled> 🚓 Police
+        </div>
+        <label class="service-chip" id="ambChip">
+            <input type="checkbox" id="ambulance" onchange="toggleChip('ambChip')"> 🚑 Ambulance
+        </label>
+        <label class="service-chip" id="fireChip">
+            <input type="checkbox" id="fire" onchange="toggleChip('fireChip')"> 🚒 Fire Brigade
+        </label>
+    </div>
+
+    <label>Current Location</label>
+    <input type="text" id="location" value="📍 Detecting location..." readonly>
+
+    <button class="submit-btn" onclick="sendAlert()">
+      CONFIRM & SEND ALERT
+    </button>
   </div>
 
-  <label>Current Location</label>
-  <input type="text" id="location" readonly placeholder="Waiting for GPS...">
-
-  <button class="submit-btn" onclick="sendAlert()">SEND EMERGENCY ALERT</button>
-</div>
-
-<footer>EST. 2025 • SCHOOL SAFETY PROJECT</footer>
+  <footer>
+    ACCIDENT ALERT SYSTEM V2.0
+  </footer>
 
 </div>
 
 <script>
-let selectedAccidentType = "";
+  let selectedType = "";
 
-function selectType(el, type) {
-  document.querySelectorAll('.type-card').forEach(card => card.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedAccidentType = type;
-}
-
-function toggleChip(id) {
-  const label = document.getElementById(id);
-  label.classList.toggle('active');
-}
-
-function openReport(){
-  document.getElementById("mainBtn").style.display = "none";
-  document.getElementById("reportBox").style.display="block";
-  getLocation();
-}
-
-function getLocation(){
-  const loc=document.getElementById("location");
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(
-      p=>{
-        loc.value=`📍 ${p.coords.latitude.toFixed(4)}, ${p.coords.longitude.toFixed(4)}`;
-        loc.style.color = "#2e7d32";
-        loc.style.fontWeight = "bold";
-      },
-      ()=>{loc.value="⚠️ Permission denied";}
-    );
+  function setType(el, type) {
+    const options = document.querySelectorAll('.type-option');
+    options.forEach(opt => opt.classList.remove('active'));
+    el.classList.add('active');
+    selectedType = type;
   }
-}
 
-function previewFile(){
-  const file=document.getElementById("evidence").files[0];
-  const preview=document.getElementById("preview");
-  preview.innerHTML="";
-  if(!file) return;
+  function toggleChip(id) {
+    document.getElementById(id).classList.toggle('active');
+  }
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    if(file.type.startsWith("image")){
-      const img=document.createElement("img");
-      img.src=e.target.result;
-      img.style.width = "100%";
-      preview.appendChild(img);
+  function openReport() {
+    document.getElementById("homeScreen").style.display = "none";
+    document.getElementById("reportBox").style.display = "block";
+    getLocation();
+  }
+
+  function closeReport() {
+    document.getElementById("homeScreen").style.display = "block";
+    document.getElementById("reportBox").style.display = "none";
+  }
+
+  function getLocation() {
+    const loc = document.getElementById("location");
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        p => {
+          loc.value = `📍 ${p.coords.latitude.toFixed(4)}, ${p.coords.longitude.toFixed(4)}`;
+        },
+        () => { loc.value = "⚠️ Location permission denied"; }
+      );
     }
   }
-  reader.readAsDataURL(file);
-}
 
-function sendAlert(){
-  const amb=document.getElementById("ambulance").checked;
-  const fire=document.getElementById("fire").checked;
+  function sendAlert() {
+    if (!selectedType) {
+      alert("Please select the accident type.");
+      return;
+    }
 
-  if(!selectedAccidentType){
-    alert("Please tap an accident type (Car, Bike, etc.)");
-    return;
+    const amb = document.getElementById("ambulance").checked;
+    const fire = document.getElementById("fire").checked;
+
+    alert(
+      "🚀 DISPATCHING EMERGENCY SERVICES\n\n" +
+      "Type: " + selectedType + "\n" +
+      "Police: DISPATCHED\n" +
+      "Ambulance: " + (amb ? "DISPATCHED" : "NOT REQUESTED") + "\n" +
+      "Fire: " + (fire ? "DISPATCHED" : "NOT REQUESTED") + "\n\n" +
+      "Please stay on the scene if safe to do so."
+    );
+    
+    location.reload(); 
   }
-
-  alert(
-    "✅ ALERT DISPATCHED\n\n" +
-    "Type: " + selectedAccidentType + "\n" +
-    "Police: NOTIFIED\n" +
-    "Medical: " + (amb?"NOTIFIED":"SKIPPED") + "\n" +
-    "Fire: " + (fire?"NOTIFIED":"SKIPPED") + "\n\n" +
-    "Please stay where you are. Help is coming."
-  );
-
-  location.reload(); 
-}
 </script>
 
 </body>
